@@ -11,15 +11,15 @@ class UserRegisterView(APIView):
 	def post(self, request):
 		# print(request.body.decode('utf-8'))
 		post_data = json.loads(request.body.decode('utf-8'))
-		data = User.objects.filter(mobile=post_data['mobile'])
+		data = User.objects.filter(email=post_data['email']).all()
 		if(len(data)):
 			return JsonResponse({"code": 403, "status": "User Already Exist"})
 
-		user = User(mobile=post_data['mobile'], fname=post_data['fname'], lname=post_data['lname'], password=make_password(post_data['password'].encode()))
+		user = User(email=post_data['email'], fname=post_data['fname'], lname=post_data['lname'], password=make_password(post_data['password'].encode()))
 		user.save()
 		response_data = User.objects.get(id=int(user.id))
 		serialize_data = UserSerializer(response_data).data
-		return JsonResponse({"code": 201, "status": "Registeration Successfull !!", "userData": serialize_data})
+		return JsonResponse({"code": 200, "status": "Registeration Successfull !!", "userData": serialize_data})
 
 	def get(self, request):
 		data = User.objects.all()
@@ -32,7 +32,7 @@ class UserLogin(APIView):
 	def post(self, request):
 		post_data = json.loads(request.body.decode('utf-8'))
 		password = post_data['password']
-		data = User.objects.filter(mobile=post_data['mobile']).all()
+		data = User.objects.filter(email=post_data['email']).all()
 		if(len(data)):
 			if check_password(data[0].password, password.encode()):
 				serial_data = UserSerializer(data[0]).data
