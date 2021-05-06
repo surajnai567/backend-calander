@@ -12,10 +12,12 @@ class UserRegisterView(APIView):
 		# print(request.body.decode('utf-8'))
 		post_data = json.loads(request.body.decode('utf-8'))
 		data = User.objects.filter(email=post_data['email']).all()
+		post_data['password'] = make_password(post_data['password'].encode())
 		if(len(data)):
 			return JsonResponse({"code": 403, "status": "User Already Exist"})
 
-		user = User(email=post_data['email'], fname=post_data['fname'], lname=post_data['lname'], password=make_password(post_data['password'].encode()))
+		#user = User(email=post_data['email'], fname=post_data['fname'], lname=post_data['lname'], password=make_password(post_data['password'].encode()))
+		user = User(**post_data)
 		user.save()
 		response_data = User.objects.get(id=int(user.id))
 		serialize_data = UserSerializer(response_data).data
