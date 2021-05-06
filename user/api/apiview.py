@@ -23,11 +23,7 @@ class UserRegisterView(APIView):
 		serialize_data = UserSerializer(response_data).data
 		return JsonResponse({"code": 200, "status": "Registeration Successfull !!", "userData": serialize_data})
 
-	def get(self, request):
-		data = User.objects.all()
-		pro = UserSerializer(data, many=True).data
-		da = {"status": "true", "data": pro}
-		return Response(da)
+
 
 
 class UserLogin(APIView):
