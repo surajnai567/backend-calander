@@ -107,8 +107,8 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':  os.environ.get("DATABASE"), #'calendar',,
-        'USER': os.environ.get("USER"),#,'postgres',
+        'NAME':  os.environ.get("DATABASE"), #'calendar',
+        'USER': os.environ.get("USER"),#'postgres',
         'PASSWORD': os.environ.get('PASSWORD'), #'daysunmon',
         'HOST':  os.environ.get('HOST'),#'localhost'
         'PORT': 5432
