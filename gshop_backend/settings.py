@@ -26,7 +26,7 @@ SECRET_KEY = 'zr&a7_pt!o_k3u5a$lup!72#_f6m3f9kpovx$2g-ba+%&ni@p@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.43.222", '127.0.0.1', 'gshop-backend.herokuapp.com']
+ALLOWED_HOSTS = ["192.168.43.222", '127.0.0.1', 'backend-cakendar.herokuapp.com']
 
 
 # Application definition
