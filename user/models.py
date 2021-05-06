@@ -17,9 +17,10 @@ class User(models.Model):
 	password = models.CharField(max_length=33)
 	reset_code = models.IntegerField(blank=True, null=True)
 	token = models.CharField(max_length=20, editable=False, default=secrets.token_hex(10))
+	dob = models.CharField(max_length=13, blank=True, null=True)
 
 	def __str__(self):
-		return self.mobile
+		return self.email
 
 
 
