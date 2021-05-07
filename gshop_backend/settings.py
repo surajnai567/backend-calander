@@ -40,26 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'user',
 	'rest_framework',
-    'category',
-    'product',
-    'order',
-    'offer',
-    'cloudinary_storage',
-    'cloudinary',
 
 ]
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME':  os.environ.get('C_NAME'),
-    'API_KEY': os.environ.get('C_API'),
-    'API_SECRET': os.environ.get('C_SECRET'),
-}
-
-#import cloudinary
-#cloudinary.config(cloud_name=os.environ.get('C_NAME'),
-###                  api_key=os.environ.get('C_API'),
-   #               api_secret=os.environ.get('C_SECRET'))
-
-#DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,10 +89,10 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':  os.environ.get("DATABASE"), #'calendar',
-        'USER': os.environ.get("USER"),#'postgres',
-        'PASSWORD': os.environ.get('PASSWORD'), #'daysunmon',
-        'HOST':  os.environ.get('HOST'),#'localhost'
+        'NAME':  'calendar',#os.environ.get("DATABASE"), #
+        'USER': 'postgres',#os.environ.get("USER"),#
+        'PASSWORD':'daysunmon',# os.environ.get('PASSWORD'), #
+        'HOST':  'localhost', #os.environ.get('HOST'),#
         'PORT': 5432
 
     }
