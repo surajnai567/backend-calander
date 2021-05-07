@@ -7,9 +7,9 @@ import json
 from utils import make_password, check_password
 import random
 from emailsender import EmailSender
+from extra import key
 
 temp = {}
-key = ""
 sender = EmailSender.instance(key)
 
 class UserRegisterView(APIView):
