@@ -1,5 +1,6 @@
 from django.db import models
 import secrets
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 
@@ -18,6 +19,14 @@ class User(models.Model):
 	reset_code = models.IntegerField(blank=True, null=True)
 	token = models.CharField(max_length=20, editable=False, default=secrets.token_hex(10))
 	dob = models.CharField(max_length=13, blank=True, null=True)
+
+	description = models.CharField(max_length=301, blank=True, null=True)
+	followers = ArrayField(models.IntegerField(), blank=True, null=True)
+	following = ArrayField(models.IntegerField(), blank=True, null=True)
+	events = ArrayField(models.IntegerField(), blank=True, null=True)
+	image = models.URLField(blank=True, null=True)
+	username = models.CharField(max_length=30, blank=True, null=True)
+
 
 	def __str__(self):
 		return self.email
