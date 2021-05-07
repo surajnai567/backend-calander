@@ -2,8 +2,6 @@ import threading
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-key = ""
-
 
 class EmailSender(object):
     __singleton_lock = threading.Lock()
