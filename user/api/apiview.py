@@ -8,9 +8,9 @@ from utils import make_password, check_password
 import random
 from emailsender import EmailSender
 from extra import key
-
 temp = {}
 sender = EmailSender.instance(key)
+
 
 class UserRegisterView(APIView):
 	def post(self, request):
@@ -33,8 +33,6 @@ class UserRegisterView(APIView):
 		response_data = User.objects.get(id=int(user.id))
 		serialize_data = UserSerializer(response_data).data
 		return JsonResponse({"code": 200, "status": "Registeration Successfull !!", "userData": serialize_data})
-
-
 
 
 class UserLogin(APIView):
