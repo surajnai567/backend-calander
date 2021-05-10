@@ -21,8 +21,10 @@ class CreateEventApiView(APIView):
             is_private = post_data.get('is_private')
             location = post_data.get('location')
             capacity = post_data.get('capacity')
+            title = post_data.get('title')
             event = Event(user_id = user[0],image=image, description=des, start_date=start_date,
-                          end_date=end_date, is_private= is_private, location=location, capacity=capacity)
+                          end_date=end_date, is_private= is_private,
+                          location=location, capacity=capacity, title=title)
             event.save()
             return JsonResponse({"code": 200, "status": "Successfull !!", "userData": "successfully created event"})
 
