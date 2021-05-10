@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'user',
 	'rest_framework',
+    'event',
 
 ]
 
@@ -93,6 +94,20 @@ DATABASES = {
         'USER': os.environ.get("USER"),#'postgres',#
         'PASSWORD': os.environ.get('PASSWORD'), #'daysunmon',#
         'HOST':  os.environ.get('HOST'),#'localhost', #
+        'PORT': 5432
+
+    }
+
+}
+
+DATABASES1 = {
+
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME':  'calendar',#
+        'USER': 'postgres',#
+        'PASSWORD': 'daysunmon',#
+        'HOST':  'localhost', #
         'PORT': 5432
 
     }
