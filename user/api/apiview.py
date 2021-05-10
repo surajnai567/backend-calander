@@ -7,7 +7,9 @@ import json
 from utils import make_password, check_password
 import random
 from emailsender import EmailSender
-from extra import key
+#from extra import keyke
+import os
+key = os.environ.get('key')
 temp = {}
 sender = EmailSender.instance(key)
 
