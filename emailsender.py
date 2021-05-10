@@ -24,6 +24,7 @@ class EmailSender(object):
     def send(self, toemail, otp):
         message = Mail(
             from_email='surajnai567@gmail.com',
+            #from_email='siying0529@gmail.com',
             to_emails='{}'.format(toemail),
             subject='otp password update',
             html_content='<strong>Here is the otp for setting the password {}</strong>'.format(otp),
@@ -34,9 +35,5 @@ class EmailSender(object):
             print(response.status_code)
         except Exception as e:
             print(e)
-
-
-
-
 
 
