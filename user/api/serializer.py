@@ -8,3 +8,7 @@ class UserSerializer(ModelSerializer):
 		fields = '__all__'
 
 
+class FollowSerializer(ModelSerializer):
+	class Meta:
+		model = User
+		fields = ['fname', 'lname', 'description', 'username', 'email','image']
