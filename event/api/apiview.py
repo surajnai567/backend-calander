@@ -56,3 +56,16 @@ class TodayEventApiView(APIView):
             data = EventSerializer(events, many=True).data
             return JsonResponse({"code": 200, "status": "Successful !!", "userData": data})
         return JsonResponse({"code": 200, "status": "UnSuccessful !!", "userData": "wrong credentials"})
+
+
+class AllEvents(APIView):
+    def post(self, request):
+        post_data = json.loads(request.body.decode('utf-8'))
+        email = post_data.get('email')
+        token = post_data.get('token')
+        user = User.objects.filter(email=email, token=token).all()
+        if len(user):
+            events = Event.objects.all()
+            data = EventSerializer(events, many=True).data
+            return JsonResponse({"code": 200, "status": "Successful !!", "userData": data})
+        return JsonResponse({"code": 200, "status": "UnSuccessful !!", "userData": "wrong credentials"})
