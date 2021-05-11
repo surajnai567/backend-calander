@@ -2,13 +2,15 @@ from user.models import User
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializer import UserSerializer
+from .serializer import UserSerializer, FollowSerializer
 import json
 from utils import make_password, check_password
 import random
 from emailsender import EmailSender
-#from extra import keyke
 import os
+from event.models import Event
+
+
 key = os.environ.get('key')
 temp = {}
 sender = EmailSender.instance(key)
@@ -74,8 +76,8 @@ class UpdateUser(APIView):
 				user[0].description = post_data['description']
 				user[0].image = post_data['image']
 				user[0].save()
-				return JsonResponse({"code": 200, "status": "success", "userData": {"state": "profile updated successful"}})
-		return JsonResponse({"code": 200, "status": "success", "userData": {"state": "updation failed"}})
+				return JsonResponse({"code": 200, "status": "success", "userData": "profile updated successful"})
+		return JsonResponse({"code": 200, "status": "success", "userData":  "updation failed"})
 
 
 class ForgetPassword(APIView):
@@ -85,7 +87,7 @@ class ForgetPassword(APIView):
 		otp = random.randint(100000, 999999)
 		temp[email] = str(otp)
 		sender.send(email, otp)
-		return JsonResponse({"code": 200, "status": "success", "userData": {"state": "sent successful"}})
+		return JsonResponse({"code": 200, "status": "success", "userData":"sent successful"})
 
 
 class UpdatePassword(APIView):
@@ -100,9 +102,86 @@ class UpdatePassword(APIView):
 				user = user[0]
 				user.password = make_password(password.encode())
 				user.save()
-				return JsonResponse({"code": 200, "status": "success", "userData": {"state":"password updated successful"}})
+				return JsonResponse({"code": 200, "status": "success", "userData": "password updated successful"})
 
-		return JsonResponse({"code": 200, "status": "success", "userData": {"state": "wrong credential please try again"}})
+		return JsonResponse({"code": 200, "status": "success", "userData": "wrong credential please try again"})
 
+###
+
+
+class MyFollowers(APIView):
+	def post(self, request):
+		post_data = json.loads(request.body.decode('utf-8'))
+		token = post_data['token']
+		user = User.objects.filter(email=post_data['email']).all()
+		if len(user):
+			if token == user[0].token:
+				data = []
+				my_followes = user[0].followers
+				for f in my_followes:
+					data.append(User.objects.filter(id=f).all()[0])
+				data = FollowSerializer(data, many=True).data
+				return JsonResponse({"code": 200, "status": "success", "userData": data})
+		return JsonResponse({"code": 200, "status": "success", "userData": "unable to fetch data"})
+
+
+class MyFollowing(APIView):
+	def post(self, request):
+		post_data = json.loads(request.body.decode('utf-8'))
+		token = post_data['token']
+		user = User.objects.filter(email=post_data['email']).all()
+		if len(user):
+			if token == user[0].token:
+				data = []
+				my_following = user[0].following
+				for f in my_following:
+					data.append(User.objects.filter(id=f).all()[0])
+				data = FollowSerializer(data, many=True).data
+
+				return JsonResponse({"code": 200, "status": "success", "userData": data})
+		return JsonResponse({"code": 200, "status": "success", "userData":"failed to fetch data"})
+
+
+class AddFollowers(APIView):
+	def post(self, request):
+		post_data = json.loads(request.body.decode('utf-8'))
+		token = post_data['token']
+		user = User.objects.filter(email=post_data['email']).all()
+		follow = post_data.get('follow_email')
+		follow_user = User.objects.filter(email=follow).all()
+		if len(user) and len(follow_user):
+			if token == user[0].token:
+				#search for follower and reply a list
+				d = user[0].following
+				d.append(follow_user[0].id)
+				user[0].following = list(set(d))
+				user[0].save()
+
+				#add increase following of that user
+				d = follow_user[0].followers
+				d.append(user[0].id)
+				follow_user[0].followers = list(set(d))
+				follow_user[0].save()
+
+				return JsonResponse({"code": 200, "status": "success", "userData": "followers updated successful"})
+		return JsonResponse({"code": 200, "status": "success", "userData":"follower updating failed"})
+
+
+class AddMyAttending(APIView):
+	def post(self, request):
+		post_data = json.loads(request.body.decode('utf-8'))
+		token = post_data.get('token')
+		user = User.objects.filter(email=post_data['email']).all()
+		event_id = post_data.get('event-id')
+		event = Event.objects.filter(id=event_id).all()
+		if len(user) and len(event):
+			if token == user[0].token:
+				temp = user[0].events
+				temp.append(event[0].id)
+				user[0].events = list(set(temp))
+				user[0].save()
+				return JsonResponse(
+					{"code": 200, "status": "success", "userData": "successful"})
+		return JsonResponse({"code": 200, "status": "success", "userData": "event updating failed"})
 
 
