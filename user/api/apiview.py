@@ -149,19 +149,21 @@ class AddFollowers(APIView):
 		user = User.objects.filter(email=post_data['email']).all()
 		follow = post_data.get('follow_email')
 		follow_user = User.objects.filter(email=follow).all()
-		if len(user) and len(follow_user):
+		if len(user) and len(follow_user) and follow:
 			if token == user[0].token:
 				#search for follower and reply a list
 				d = user[0].following
 				d.append(follow_user[0].id)
 				user[0].following = list(set(d))
 				user[0].save()
+				print("following", user[0].following)
 
 				#add increase following of that user
 				d = follow_user[0].followers
 				d.append(user[0].id)
 				follow_user[0].followers = list(set(d))
 				follow_user[0].save()
+				print("followers", follow_user[0].followers)
 
 				#fetch follower list
 				data = []
