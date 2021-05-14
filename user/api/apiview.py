@@ -163,7 +163,14 @@ class AddFollowers(APIView):
 				follow_user[0].followers = list(set(d))
 				follow_user[0].save()
 
-				return JsonResponse({"code": 200, "status": "success", "userData": "followers updated successful"})
+				#fetch follower list
+				data = []
+				my_following = user[0].following
+				for f in my_following:
+					data.append(User.objects.filter(id=f).all()[0])
+				data = FollowSerializer(data, many=True).data
+
+				return JsonResponse({"code": 200, "status": "success", "userData": data})
 		return JsonResponse({"code": 200, "status": "success", "userData":"follower updating failed"})
 
 
