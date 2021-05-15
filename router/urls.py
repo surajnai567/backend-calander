@@ -13,10 +13,11 @@ urlpatterns = [
 	path('update-user', UpdateUser.as_view(),),
 	path('event', CreateEventApiView.as_view(),),
 	path('event/<int:id>', event, ),
+	path('event/retrieve', AllEvents.as_view(),),
 
-	path('my-event', MyEventApiView.as_view(),),
-	path('today-event', TodayEventApiView.as_view(),),
-	path('all-event', AllEvents.as_view(),),
+	#path('my-event', MyEventApiView.as_view(),),
+	#path('today-event', TodayEventApiView.as_view(),),
+	#path('all-event', AllEvents.as_view(),),
 
 	path('user/<str:username>/follow', AddFollowers.as_view(),),
 	path('user/<str:username>/followers', Followers.as_view(),),
