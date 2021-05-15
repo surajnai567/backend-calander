@@ -86,7 +86,7 @@ DATABASES1 = {
     }
 }
 
-DATABASES = {
+DATABASES12 = {
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -100,7 +100,7 @@ DATABASES = {
 
 }
 
-DATABASES12 = {
+DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
