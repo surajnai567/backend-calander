@@ -8,6 +8,13 @@ class UserSerializer(ModelSerializer):
 		fields = '__all__'
 
 
+class UserSerializerCustom(ModelSerializer):
+	class Meta:
+		model = User
+		fields = ['id']
+
+
+
 class FollowSerializer(ModelSerializer):
 	class Meta:
 		model = User
