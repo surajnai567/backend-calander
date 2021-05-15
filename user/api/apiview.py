@@ -109,46 +109,47 @@ class UpdatePassword(APIView):
 ###
 
 
-class MyFollowers(APIView):
-	def post(self, request):
+class Followers(APIView):
+	def post(self, request, username):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data['token']
-		user = User.objects.filter(email=post_data['email']).all()
+		user = User.objects.filter(username=post_data['username'], token=token).all()
 		if len(user):
-			if token == user[0].token:
-				data = []
-				my_followes = user[0].followers
+			data = []
+			user_data = User.objects.filter(username=username).all()
+			if len(user_data):
+				my_followes = user_data[0].followers
 				for f in my_followes:
 					data.append(User.objects.filter(id=f).all()[0])
-				data = FollowSerializer(data, many=True).data
+					data = FollowSerializer(data, many=True).data
 				return JsonResponse({"code": 200, "status": "success", "userData": data})
-		return JsonResponse({"code": 200, "status": "success", "userData": "unable to fetch data"})
+		return JsonResponse({"code": 200, "status": "success", "userData": []})
 
 
-class MyFollowing(APIView):
-	def post(self, request):
+class Following(APIView):
+	def post(self, request, username):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data['token']
-		user = User.objects.filter(email=post_data['email']).all()
+		user = User.objects.filter(username=post_data['username'], token=token).all()
 		if len(user):
-			if token == user[0].token:
-				data = []
-				my_following = user[0].following
-				for f in my_following:
+			data = []
+			user_data = User.objects.filter(username=username).all()
+			if len(user_data):
+				my_followes = user_data[0].following
+				for f in my_followes:
 					data.append(User.objects.filter(id=f).all()[0])
-				data = FollowSerializer(data, many=True).data
-
+					data = FollowSerializer(data, many=True).data
 				return JsonResponse({"code": 200, "status": "success", "userData": data})
-		return JsonResponse({"code": 200, "status": "success", "userData":"failed to fetch data"})
+		return JsonResponse({"code": 200, "status": "success", "userData": []})
 
 
 class AddFollowers(APIView):
-	def post(self, request):
+	def post(self, request, username):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data['token']
-		user = User.objects.filter(email=post_data['email']).all()
-		follow = post_data.get('follow-email')
-		follow_user = User.objects.filter(email=follow).all()
+		user = User.objects.filter(username=post_data['username']).all()
+		follow = username
+		follow_user = User.objects.filter(username=follow).all()
 		if len(user) and len(follow_user):
 			if token == user[0].token:
 				#search for follower and reply a list
@@ -194,3 +195,7 @@ class AddMyAttending(APIView):
 		return JsonResponse({"code": 200, "status": "success", "userData": "event updating failed"})
 
 
+def test(request):
+	usr = User.objects.all()
+	data = UserSerializer(usr, many=True).data
+	return JsonResponse({"data":data})
