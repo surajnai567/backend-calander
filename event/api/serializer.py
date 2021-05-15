@@ -6,3 +6,9 @@ class EventSerializer(ModelSerializer):
 	class Meta:
 		model = Event
 		fields = '__all__'
+
+
+class Events(ModelSerializer):
+	class Meta:
+		model = Event
+		fields = ['start_dttime', 'end_dttime', 'user_id', 'attending_user']
