@@ -18,12 +18,12 @@ class CreateEventApiView(APIView):
             des = post_data.get('description')
             start_date = post_data.get('start_date')
             end_date = post_data.get('end_date')
-            is_private = post_data.get('is_private')
+            is_private = post_data.get('privacy_level')
             location = post_data.get('location')
             capacity = post_data.get('capacity')
             title = post_data.get('title')
             event = Event(user_id = user[0],image=image, description=des, start_date=start_date,
-                          end_date=end_date, is_private= is_private,
+                          end_date=end_date, is_private=is_private,
                           location=location, capacity=capacity, title=title)
             event.save()
             return JsonResponse({"code": 200, "status": "Successfull !!", "userData": "successfully created event"})
@@ -69,3 +69,25 @@ class AllEvents(APIView):
             data = EventSerializer(events, many=True).data
             return JsonResponse({"code": 200, "status": "Successful !!", "userData": data})
         return JsonResponse({"code": 200, "status": "UnSuccessful !!", "userData": "wrong credentials"})
+
+
+def event(request, id):
+    if request.method == 'GET':
+        event = Event.objects.filter(id=id).all()
+        if len(event):
+            data = EventSerializer(event[0]).data
+            return JsonResponse({"data": data})
+        else:
+            return JsonResponse({"data": {}})
+
+
+class He(APIView):
+    def post(self, request, username):
+        print(username)
+        return JsonResponse({"data": username})
+
+
+class GetEvent(APIView):
+    def post(self, request):
+        pass
+
