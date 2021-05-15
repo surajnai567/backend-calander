@@ -178,11 +178,10 @@ class AddFollowers(APIView):
 
 
 class AddMyAttending(APIView):
-	def post(self, request):
+	def post(self, request, event_id):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data.get('token')
-		user = User.objects.filter(email=post_data['email']).all()
-		event_id = post_data.get('event-id')
+		user = User.objects.filter(username=post_data.get('username')).all()
 		event = Event.objects.filter(id=event_id).all()
 		if len(user) and len(event):
 			if token == user[0].token:
@@ -190,6 +189,12 @@ class AddMyAttending(APIView):
 				temp.append(event[0].id)
 				user[0].events = list(set(temp))
 				user[0].save()
+
+				temp = event[0].attending_user
+				temp.append(user[0].id)
+				event[0].attending_user = list(set(temp))
+				event[0].save()
+
 				return JsonResponse(
 					{"code": 200, "status": "success", "userData": "successful"})
 		return JsonResponse({"code": 200, "status": "success", "userData": "event updating failed"})
