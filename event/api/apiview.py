@@ -1,24 +1,33 @@
 from event.models import Event
 from django.http import JsonResponse
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from .serializer import EventSerializer , Events
+from .serializer import EventSerializer, Events
 from user.models import User
 import json
 
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
+from drf_yasg import openapi
+from .swaggerresponse import PostCredential, CreateEventParmas
+
 
 class CreateEventApiView(APIView):
+    user_response = openapi.Response('response description', Events)
+    @swagger_auto_schema(request_body=CreateEventParmas, responses={200:'"status": "Successfull !!", "userData": "successfully created event"}',
+                                                                  201:'"status": "UnSuccessfull !!", "userData": "wrong credentials"'})
     def post(self, request):
         post_data = json.loads(request.body.decode('utf-8'))
-        email = post_data.get('email')
+        username = post_data.get('username')
         token = post_data.get('token')
-        user = User.objects.filter(email=email, token=token).all()
+        user = User.objects.filter(username=username, token=token).all()
         if len(user):
             image = post_data.get('image')
             des = post_data.get('description')
             start_date = post_data.get('start_dttime')
             end_date = post_data.get('end_dttime')
-            is_private = post_data.get('privacy_level')
+            is_private = post_data.get('is_private')
             location = post_data.get('location')
             capacity = post_data.get('capacity')
             title = post_data.get('title')
@@ -28,7 +37,7 @@ class CreateEventApiView(APIView):
             event.save()
             return JsonResponse({"code": 200, "status": "Successfull !!", "userData": "successfully created event"})
 
-        return JsonResponse({"code": 200, "status": "UnSuccessfull !!", "userData": "wrong credentials"})
+        return JsonResponse({"code": 201, "status": "UnSuccessfull !!", "userData": "wrong credentials"})
 
 
 class MyEventApiView(APIView):
@@ -59,6 +68,9 @@ class TodayEventApiView(APIView):
 
 
 class AllEvents(APIView):
+    user_response = openapi.Response('response description', Events)
+    @swagger_auto_schema(request_body=PostCredential, responses={200:user_response,
+                                                                 201:'"status": "UnSuccessful !!", "userData": "wrong credentials"'})
     def post(self, request):
         post_data = json.loads(request.body.decode('utf-8'))
         username = post_data.get('username')
@@ -67,27 +79,21 @@ class AllEvents(APIView):
         if len(user):
             events = Event.objects.all()
             data = Events(events, many=True).data
+            for d in data:
+                user = User.objects.filter(id=d['user_id']).all()[0]
+                d['hosted_by'] = user.username
             return JsonResponse({"code": 200, "status": "Successful !!", "userData": data})
-        return JsonResponse({"code": 200, "status": "UnSuccessful !!", "userData": "wrong credentials"})
+        return JsonResponse({"code": 201, "status": "UnSuccessful !!", "userData": "wrong credentials"})
 
 
-def event(request, id):
-    if request.method == 'GET':
-        event = Event.objects.filter(id=id).all()
-        if len(event):
-            data = EventSerializer(event[0]).data
-            return JsonResponse({"data": data})
-        else:
-            return JsonResponse({"data": {}})
-
-
-class He(APIView):
-    def post(self, request, username):
-        print(username)
-        return JsonResponse({"data": username})
-
-
-class GetEvent(APIView):
-    def post(self, request):
-        pass
-
+class GetEventById(APIView):
+    user_response = openapi.Response('response description', EventSerializer)
+    @swagger_auto_schema(responses={200: user_response})
+    def get(self, request, id):
+        if request.method == 'GET':
+            event = Event.objects.filter(id=id).all()
+            if len(event):
+                data = EventSerializer(event[0]).data
+                return JsonResponse({"data": data})
+            else:
+                return JsonResponse({"data": {}})
