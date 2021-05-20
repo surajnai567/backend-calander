@@ -11,4 +11,5 @@ class EventSerializer(ModelSerializer):
 class Events(ModelSerializer):
 	class Meta:
 		model = Event
-		fields = ['start_dttime', 'end_dttime', 'user_id', 'attending_user']
+		fields = '__all__'
+		#fields = ['start_dttime', 'end_dttime', 'user_id', 'attending_user']
