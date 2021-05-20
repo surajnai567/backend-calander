@@ -11,11 +11,11 @@ class Event(models.Model):
     title = models.CharField(max_length=300)
     description = models.CharField(max_length=300)
     location = models.CharField(max_length=300)
-    is_private = models.CharField(max_length=6)
-    start_dttime = models.CharField(max_length=12)
-    end_dttime = models.CharField(max_length=12)
-    capacity = models.CharField(max_length=10)
-    attending_user = ArrayField(models.IntegerField(), blank=True, default=list())
+    is_private = models.BooleanField()
+    start_dttime = models.DateTimeField()
+    end_dttime = models.DateTimeField()
+    capacity = models.IntegerField()
+    attending_user = ArrayField(models.IntegerField(), blank=True, default=list)
 
 
 
