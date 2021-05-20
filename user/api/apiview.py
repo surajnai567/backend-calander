@@ -10,6 +10,11 @@ from emailsender import EmailSender
 import os
 from event.models import Event
 
+from .swaggerresponse import PostCredentialUser, AttendEventParams, \
+	UpdatePasswordParams, ForgetPasswordParams, UserUpdateParams,UserLoginParams, UserRegisterParmas
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 key = os.environ.get('key')
 temp = {}
@@ -17,6 +22,9 @@ sender = EmailSender.instance(key)
 
 
 class UserRegisterView(APIView):
+	user_response = openapi.Response('return credential of user', UserSerializer)
+	@swagger_auto_schema(request_body=UserRegisterParmas, responses={200: user_response,
+																	   403: '"status": "Username/email Already Exist"'})
 	def post(self, request):
 		# print(request.body.decode('utf-8'))
 		post_data = json.loads(request.body.decode('utf-8'))
@@ -40,6 +48,9 @@ class UserRegisterView(APIView):
 
 
 class UserLogin(APIView):
+	user_response = openapi.Response('return Credential of user', UserSerializer)
+	@swagger_auto_schema(request_body=UserLoginParams, responses={200: user_response,
+																	   201: '"status": "success", "userData": "wrong credential please try again"'})
 	def post(self, request):
 		post_data = json.loads(request.body.decode('utf-8'))
 		password = post_data['password']
@@ -65,10 +76,13 @@ class UserLogin(APIView):
 
 
 class UpdateUser(APIView):
+	@swagger_auto_schema(request_body=UserUpdateParams,
+						 responses={200: '"status": "success", "userData": "profile updation successful"',
+									201:'"status": "success", "userData": "updation failed"'})
 	def post(self, request):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data['token']
-		user = User.objects.filter(email=post_data['email']).all()
+		user = User.objects.filter(username=post_data['username']).all()
 		if len(user):
 			if token == user[0].token:
 				user[0].fname = post_data['fname']
@@ -77,25 +91,28 @@ class UpdateUser(APIView):
 				user[0].image = post_data['image']
 				user[0].save()
 				return JsonResponse({"code": 200, "status": "success", "userData": "profile updated successful"})
-		return JsonResponse({"code": 200, "status": "success", "userData":  "updation failed"})
+		return JsonResponse({"code": 201, "status": "success", "userData":  "updation failed"})
 
 
 class ForgetPassword(APIView):
+	@swagger_auto_schema(request_body=ForgetPasswordParams, responses={200: '"status": "success", "userData": "otp sent successful"'})
 	def post(self, request):
 		post_data = json.loads(request.body.decode('utf-8'))
 		email = post_data['email']
 		otp = random.randint(100000, 999999)
 		temp[email] = str(otp)
 		sender.send(email, otp)
-		return JsonResponse({"code": 200, "status": "success", "userData":"sent successful"})
+		return JsonResponse({"code": 200, "status": "success", "userData":"otp sent successful"})
 
 
 class UpdatePassword(APIView):
+	@swagger_auto_schema(request_body=UpdatePasswordParams, responses={200: '"status": "success", "userData": "password updated successful"',
+																	   201: '"status": "success", "userData": "wrong credential please try again"'})
 	def post(self, request):
 		post_data = json.loads(request.body.decode('utf-8'))
-		email = post_data['email']
-		otp = post_data['otp']
-		password = post_data['password']
+		email = post_data.get('email')
+		otp = post_data.get('otp')
+		password = post_data.get('password')
 		if temp.get(email) == otp:
 			user = User.objects.filter(email=email).all()
 			if len(user):
@@ -104,12 +121,14 @@ class UpdatePassword(APIView):
 				user.save()
 				return JsonResponse({"code": 200, "status": "success", "userData": "password updated successful"})
 
-		return JsonResponse({"code": 200, "status": "success", "userData": "wrong credential please try again"})
+		return JsonResponse({"code": 201, "status": "success", "userData": "wrong credential please try again"})
 
 ###
 
 
 class Followers(APIView):
+	user_response = openapi.Response('return list of followers', FollowSerializer)
+	@swagger_auto_schema(request_body=PostCredentialUser, responses={200: user_response})
 	def post(self, request, username):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data['token']
@@ -127,6 +146,8 @@ class Followers(APIView):
 
 
 class Following(APIView):
+	user_response = openapi.Response('return list of following', FollowSerializer)
+	@swagger_auto_schema(request_body=PostCredentialUser, responses={200: user_response})
 	def post(self, request, username):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data['token']
@@ -144,6 +165,9 @@ class Following(APIView):
 
 
 class AddFollowers(APIView):
+	user_response = openapi.Response('return list of followers', FollowSerializer)
+	@swagger_auto_schema(request_body=PostCredentialUser, responses={200: user_response,
+																	 201:'"status": "success", "userData":"follower updating failed"'})
 	def post(self, request, username):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data['token']
@@ -174,10 +198,12 @@ class AddFollowers(APIView):
 				data = FollowSerializer(data, many=True).data
 
 				return JsonResponse({"code": 200, "status": "success", "userData": data})
-		return JsonResponse({"code": 200, "status": "success", "userData":"follower updating failed"})
+		return JsonResponse({"code": 201, "status": "success", "userData":"follower updating failed"})
 
 
 class AddMyAttending(APIView):
+	@swagger_auto_schema(request_body=PostCredentialUser, responses={200: '"status": "success", "userData": "successful"',
+																	 201:'"status": "success", "userData": "event updating failed"'})
 	def post(self, request, event_id):
 		post_data = json.loads(request.body.decode('utf-8'))
 		token = post_data.get('token')
@@ -197,7 +223,7 @@ class AddMyAttending(APIView):
 
 				return JsonResponse(
 					{"code": 200, "status": "success", "userData": "successful"})
-		return JsonResponse({"code": 200, "status": "success", "userData": "event updating failed"})
+		return JsonResponse({"code": 201, "status": "success", "userData": "event updating failed"})
 
 
 def test(request):
