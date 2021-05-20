@@ -5,7 +5,7 @@ from user.models import User
 class UserSerializer(ModelSerializer):
 	class Meta:
 		model = User
-		fields = ['fname', 'lname', 'description','followers','following', 'image', 'description','token','dob','events']
+		fields = ['fname', 'lname','username' ,'description','followers','following', 'image', 'description','token','dob','events']
 
 
 class UserSerializerCustom(ModelSerializer):

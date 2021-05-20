@@ -229,4 +229,4 @@ class AddMyAttending(APIView):
 def test(request):
 	usr = User.objects.all()
 	data = UserSerializer(usr, many=True).data
-	return JsonResponse({"data":data})
+	return JsonResponse({"data": data})
