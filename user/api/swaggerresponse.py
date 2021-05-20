@@ -30,6 +30,7 @@ class UserUpdateParams(serializers.Serializer):
     lname = serializers.CharField(required=True)
     email = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
+    image = serializers.URLField()
 
 
 class UserLoginParams(serializers.Serializer):
