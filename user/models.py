@@ -21,9 +21,9 @@ class User(models.Model):
 	dob = models.CharField(max_length=13, blank=True, null=True)
 
 	description = models.CharField(max_length=301, blank=True, null=True)
-	followers = ArrayField(models.IntegerField(), blank=True, default=list())
-	following = ArrayField(models.IntegerField(), blank=True, default=list())
-	events = ArrayField(models.IntegerField(), blank=True, default=list())
+	followers = ArrayField(models.IntegerField(), blank=True, default=list)
+	following = ArrayField(models.IntegerField(), blank=True, default=list)
+	events = ArrayField(models.IntegerField(), blank=True, default=list)
 	image = models.URLField(blank=True, null=True)
 	username = models.CharField(max_length=30, blank=True, null=True)
 
