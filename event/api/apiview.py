@@ -31,7 +31,7 @@ class CreateEventApiView(APIView):
             location = post_data.get('location')
             capacity = post_data.get('capacity')
             title = post_data.get('title')
-            event = Event(user_id = user[0],image=image, description=des, start_dttime=start_date,
+            event = Event(host_id = user[0],image=image, description=des, start_dttime=start_date,
                           end_dttime=end_date, is_private=is_private,
                           location=location, capacity=capacity, title=title)
             event.save()
