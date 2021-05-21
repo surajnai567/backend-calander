@@ -23,5 +23,10 @@ class CreateEventParmas(serializers.Serializer):
 
 class EventByIDParams(serializers.Serializer):
    username = serializers.CharField(required=True)
-   token = serializers.CharField()
+   token = serializers.CharField(required=True)
 
+
+class PostParmAllEvent(serializers.Serializer):
+   username = serializers.CharField(required=True)
+   token = serializers.CharField(required=True)
+   title = serializers.CharField()
