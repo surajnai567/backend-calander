@@ -1,7 +1,7 @@
 from django.urls import path
 from user.api.apiview import UserRegisterView, UserLogin, \
 	UpdateUser,ForgetPassword, UpdatePassword, AddFollowers,\
-	Followers,Following, AddMyAttending, test, GetUserById
+	Followers,Following, AddMyAttending, test, GetUserById, GetUserByUsername
 from event.api.apiview import CreateEventApiView, MyEventApiView,\
 	TodayEventApiView, AllEvents, GetEventById, GetEventBYUser
 
@@ -28,7 +28,7 @@ urlpatterns = [
 	path('user/register', UserRegisterView.as_view()),
 	path('user/<int:id>', GetUserById.as_view()),
 	path('user/login', UserLogin.as_view(),),
-	path('user/forget', ForgetPassword.as_view(),),
+	path('user/forget-password', ForgetPassword.as_view(),),
 	path('user/update-password', UpdatePassword.as_view(),),
 	path('user/update-user', UpdateUser.as_view(),),
 	path('event', CreateEventApiView.as_view(),),
@@ -45,6 +45,7 @@ urlpatterns = [
 	path('user/<str:username>/follow', AddFollowers.as_view(),),
 	path('user/<str:username>/followers', Followers.as_view(),),
 	path('user/<str:username>/following', Following.as_view(),),
+	path('user/retrieve', GetUserByUsername.as_view(),),
 
 
 	path('', test,),
