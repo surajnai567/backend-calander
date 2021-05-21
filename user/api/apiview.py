@@ -9,6 +9,7 @@ import random
 from emailsender import EmailSender
 import os
 from event.models import Event
+from event.api.serializer import EventSerializer
 
 from .swaggerresponse import PostCredentialUser, AttendEventParams, \
 	UpdatePasswordParams, ForgetPasswordParams, UserUpdateParams,UserLoginParams, UserRegisterParmas
@@ -205,7 +206,7 @@ class AddFollowers(APIView):
 
 
 class AddMyAttending(APIView):
-	@swagger_auto_schema(request_body=PostCredentialUser, responses={200: '"status": "success", "userData": "successful"',
+	@swagger_auto_schema(request_body=PostCredentialUser, responses={200: "event updated",
 																	 201:'"status": "success", "userData": "event updating failed"'})
 	def post(self, request, event_id):
 		post_data = json.loads(request.body.decode('utf-8'))
@@ -225,7 +226,7 @@ class AddMyAttending(APIView):
 				event[0].save()
 
 				return JsonResponse(
-					{"code": 200, "status": "success", "userData": "successful"})
+					{"code": 200, "status": "success", "userData": "event updated"})
 		return JsonResponse({"code": 201, "status": "success", "userData": "event updating failed"})
 
 
