@@ -10,7 +10,7 @@ import json
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 from drf_yasg import openapi
-from .swaggerresponse import PostCredential, CreateEventParmas
+from .swaggerresponse import PostCredential, CreateEventParmas, PostParmAllEvent
 
 
 class CreateEventApiView(APIView):
@@ -68,16 +68,20 @@ class TodayEventApiView(APIView):
 
 
 class AllEvents(APIView):
-    user_response = openapi.Response('response description', Events)
-    @swagger_auto_schema(request_body=PostCredential, responses={200:user_response,
+    user_response = openapi.Response('return list of events', Events)
+    @swagger_auto_schema(request_body=PostParmAllEvent, responses={200:user_response,
                                                                  201:'"status": "UnSuccessful !!", "userData": "wrong credentials"'})
     def post(self, request):
         post_data = json.loads(request.body.decode('utf-8'))
         username = post_data.get('username')
         token = post_data.get('token')
+        title = post_data.get('title')
         user = User.objects.filter(username=username, token=token).all()
         if len(user):
-            events = Event.objects.all()
+            if title is not None and title != '':
+                events = Event.objects.filter(title=title).all()
+            else:
+                events = Event.objects.all()
             data = Events(events, many=True).data
             for d in data:
                 user = User.objects.filter(id=d['host_id']).all()[0]
