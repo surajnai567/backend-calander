@@ -6,7 +6,7 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class Event(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    host_id = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.URLField()
     title = models.CharField(max_length=300)
     description = models.CharField(max_length=300)
