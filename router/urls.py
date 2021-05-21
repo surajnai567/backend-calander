@@ -3,7 +3,7 @@ from user.api.apiview import UserRegisterView, UserLogin, \
 	UpdateUser,ForgetPassword, UpdatePassword, AddFollowers,\
 	Followers,Following, AddMyAttending, test
 from event.api.apiview import CreateEventApiView, MyEventApiView,\
-	TodayEventApiView, AllEvents, GetEventById
+	TodayEventApiView, AllEvents, GetEventById, GetEventBYUser
 
 
 from rest_framework import permissions
@@ -34,6 +34,7 @@ urlpatterns = [
 	path('event/<int:id>', GetEventById.as_view(), ),
 	path('event/retrieve', AllEvents.as_view(),),
 	path('event/<event_id>/attend', AddMyAttending.as_view(),),
+	path('event/<username>/attending', GetEventBYUser.as_view(),),
 
 
 	#path('my-event', MyEventApiView.as_view(),),
