@@ -47,6 +47,11 @@ class UserRegisterParmas(serializers.Serializer):
     password = serializers.CharField(required=True)
 
 
+class UserRetriveUsername(serializers.Serializer):
+    """Your data serializer, define your fields here."""
+    username = serializers.CharField(required=True)
+    token = serializers.CharField(required=True)
+    user_search = serializers.CharField(required=True)
 
 
 
