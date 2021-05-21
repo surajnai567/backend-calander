@@ -1,7 +1,7 @@
 from django.urls import path
 from user.api.apiview import UserRegisterView, UserLogin, \
 	UpdateUser,ForgetPassword, UpdatePassword, AddFollowers,\
-	Followers,Following, AddMyAttending, test
+	Followers,Following, AddMyAttending, test, GetUserById
 from event.api.apiview import CreateEventApiView, MyEventApiView,\
 	TodayEventApiView, AllEvents, GetEventById, GetEventBYUser
 
@@ -26,6 +26,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
 	path('user/register', UserRegisterView.as_view()),
+	path('user/<int:id>', GetUserById.as_view()),
 	path('user/login', UserLogin.as_view(),),
 	path('user/forget', ForgetPassword.as_view(),),
 	path('user/update-password', UpdatePassword.as_view(),),
