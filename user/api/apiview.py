@@ -13,7 +13,7 @@ from event.api.serializer import EventSerializer
 
 from .swaggerresponse import PostCredentialUser, AttendEventParams, \
 	UpdatePasswordParams, ForgetPasswordParams, UserUpdateParams,\
-	UserLoginParams, UserRegisterParmas
+	UserLoginParams, UserRegisterParmas, UserRetriveUsername
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -252,6 +252,28 @@ class GetUserById(APIView):
 		else:
 			return JsonResponse({"code": 201, "status": "success", "userDate": "wrong credentials"})
 
+
+class GetUserByUsername(APIView):
+	user_response = openapi.Response('returns list of users', UserSerializer)
+	@swagger_auto_schema(request_body=UserRetriveUsername, responses={200: user_response,
+																	 201:'"status": "success", "userData": "wrong credentail"'})
+	def post(self, request):
+		post_data = json.loads(request.body.decode('utf-8'))
+		token = post_data.get('token')
+		username = post_data.get('username')
+		user_search = post_data.get('user_search')
+		user = User.objects.filter(token=token, username=username).all()
+		if len(user):
+			temp = User.objects.filter(username__contains=user_search).all()
+			if len(temp):
+				data = UserSerializer(temp, many=True).data
+				return JsonResponse({"code": 200, "status":"success", "userDate": data})
+
+			else:
+				return JsonResponse({"code": 200, "status": "success", "userDate": {}})
+
+		else:
+			return JsonResponse({"code": 201, "status": "success", "userDate": "wrong credentials"})
 
 
 
