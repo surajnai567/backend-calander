@@ -80,7 +80,7 @@ class AllEvents(APIView):
             events = Event.objects.all()
             data = Events(events, many=True).data
             for d in data:
-                user = User.objects.filter(id=d['user_id']).all()[0]
+                user = User.objects.filter(id=d['host_id']).all()[0]
                 d['hosted_by'] = user.username
             return JsonResponse({"code": 200, "status": "Successful !!", "userData": data})
         return JsonResponse({"code": 201, "status": "UnSuccessful !!", "userData": "wrong credentials"})
@@ -88,12 +88,56 @@ class AllEvents(APIView):
 
 class GetEventById(APIView):
     user_response = openapi.Response('response description', EventSerializer)
-    @swagger_auto_schema(responses={200: user_response})
-    def get(self, request, id):
-        if request.method == 'GET':
+    @swagger_auto_schema(request_body=PostCredential, responses={200: user_response})
+    def post(self, request, id):
+        post_data = json.loads(request.body.decode('utf-8'))
+        username = post_data.get('username')
+        token = post_data.get('token')
+        user = User.objects.filter(username=username, token=token)
+        if len(user):
             event = Event.objects.filter(id=id).all()
             if len(event):
                 data = EventSerializer(event[0]).data
                 return JsonResponse({"data": data})
             else:
                 return JsonResponse({"data": {}})
+        else:
+            return JsonResponse({"data": "wrong credentials"})
+
+
+class GetEventBYUser(APIView):
+    user_response = openapi.Response('response description', EventSerializer)
+    @swagger_auto_schema(request_body=PostCredential, responses={200: user_response})
+    def post(self, request, username):
+        post_data = json.loads(request.body.decode('utf-8'))
+        usernam = post_data.get('username')
+        token = post_data.get('token')
+        user = User.objects.filter(username=usernam, token=token)
+        if len(user):
+            insterested_user = User.objects.filter(username=username)
+            data = []
+            eve = insterested_user[0].events
+            for e in eve:
+                data.append(Event.objects.filter(id=e).all()[0])
+
+            data_post = EventSerializer(data, many=True).data
+            for d in data_post:
+                user = User.objects.filter(id=d['host_id']).all()[0]
+                d['hosted_by'] = user.username
+
+            return JsonResponse({"data": data_post})
+
+        else:
+            return JsonResponse({"data": "wrong credentials"})
+
+
+
+##############
+def get(self, request, id):
+    if request.method == 'GET':
+        event = Event.objects.filter(id=id).all()
+        if len(event):
+             data = EventSerializer(event[0]).data
+             return JsonResponse({"data": data})
+        else:
+            return JsonResponse({"data": {}})

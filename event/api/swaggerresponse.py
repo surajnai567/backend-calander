@@ -19,3 +19,9 @@ class CreateEventParmas(serializers.Serializer):
    start_dttime = serializers.DateTimeField()
    end_dttime = serializers.DateTimeField()
    capacity = serializers.IntegerField()
+
+
+class EventByIDParams(serializers.Serializer):
+   username = serializers.CharField(required=True)
+   token = serializers.CharField()
+
