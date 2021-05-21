@@ -79,7 +79,7 @@ class AllEvents(APIView):
         user = User.objects.filter(username=username, token=token).all()
         if len(user):
             if title is not None and title != '':
-                events = Event.objects.filter(title=title).all()
+                events = Event.objects.filter(title__contains=title).all()
             else:
                 events = Event.objects.all()
             data = Events(events, many=True).data
