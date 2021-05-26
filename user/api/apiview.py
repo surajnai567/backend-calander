@@ -101,10 +101,13 @@ class ForgetPassword(APIView):
 	def post(self, request):
 		post_data = json.loads(request.body.decode('utf-8'))
 		email = post_data['email']
-		otp = random.randint(100000, 999999)
-		temp[email] = str(otp)
-		sender.send(email, otp)
-		return JsonResponse({"code": 200, "status": "success", "userData":"otp sent successful"})
+		user = User.objects.filter(email=email).all()
+		if len(user):
+			otp = random.randint(100000, 999999)
+			temp[email] = str(otp)
+			sender.send(email, otp)
+			return JsonResponse({"code": 200, "status": "success", "userData":"otp sent successful"})
+		return JsonResponse({"code": 200, "status": "success", "userData": "user email does not exist in database"})
 
 
 class UpdatePassword(APIView):
