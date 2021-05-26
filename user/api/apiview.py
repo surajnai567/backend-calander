@@ -115,7 +115,7 @@ class UpdatePassword(APIView):
 		email = post_data.get('email')
 		otp = post_data.get('otp')
 		password = post_data.get('password')
-		if temp.get(email) == str(otp):
+		if temp.get(email) == otp:
 			user = User.objects.filter(email=email).all()
 			if len(user):
 				user = user[0]
