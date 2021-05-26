@@ -121,6 +121,7 @@ class UpdatePassword(APIView):
 				user = user[0]
 				user.password = make_password(password.encode())
 				user.save()
+				del temp[email]
 				return JsonResponse({"code": 200, "status": "success", "userData": "password updated successful"})
 
 		return JsonResponse({"code": 201, "status": "success", "userData": "wrong credential please try again"})
